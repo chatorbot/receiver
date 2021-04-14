@@ -5,7 +5,7 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/andersfylling/disgord"
+	"github.com/auttaja/discordgo"
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 )
@@ -15,7 +15,7 @@ type EventHandler interface{}
 // Receiver is a client to interface with the Chator NATS Discord interface
 type Receiver struct {
 	conn     *nats.Conn
-	session  disgord.Session
+	session  *discordgo.Session
 	handlers map[string][]EventHandler
 	log      *logrus.Logger
 }
@@ -61,11 +61,15 @@ func New(conf *Config) (*Receiver, error) {
 	r.log = conf.Logger
 
 	// TODO: Add redis cache interface
+	r.session, err = discordgo.New("Bot " + conf.Token)
+	if err != nil {
+		return nil, err
+	}
 
-	r.session = disgord.New(disgord.Config{
-		BotToken: conf.Token,
-		Logger:   conf.Logger,
-	})
+	// r.session = disgord.New(disgord.Config{
+	// 	BotToken: conf.Token,
+	// 	Logger:   conf.Logger,
+	// })
 
 	return r, nil
 }
