@@ -111,8 +111,8 @@ func (r *Receiver) listener(m *nats.Msg) {
 		numIn := x.NumIn()   //Count inbound parameters
 		numOut := x.NumOut() //Count outbounding parameters
 
-		if numIn != 2 || numOut != 1 {
-			r.log.Warn("Invalid function signature for event ", m.Subject, "\n", string(m.Data))
+		if numIn != 2 || numOut != 0 {
+			r.log.Warn("Invalid function signature for event ", m.Subject)
 			return
 		}
 
@@ -129,12 +129,6 @@ func (r *Receiver) listener(m *nats.Msg) {
 		}
 
 		f := reflect.ValueOf(h)
-		ret := f.Call([]reflect.Value{reflect.ValueOf(r.session), typePtr})
-		if ret[0].Interface() != nil {
-			err = ret[0].Interface().(error)
-			if err != nil {
-				// handle error
-			}
-		}
+		f.Call([]reflect.Value{reflect.ValueOf(r.session), typePtr})
 	}
 }
