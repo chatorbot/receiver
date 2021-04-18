@@ -112,7 +112,7 @@ func (r *Receiver) listener(m *nats.Msg) {
 		numOut := x.NumOut() //Count outbounding parameters
 
 		if numIn != 2 || numOut != 1 {
-			r.log.Warn("Invalid function signature for event ", m.Subject)
+			r.log.Warn("Invalid function signature for event ", m.Subject, "\n", string(m.Data))
 			return
 		}
 
