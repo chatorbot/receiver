@@ -25,6 +25,7 @@ type Config struct {
 	NatsAddr string
 	Token    string
 	Logger   *logrus.Logger
+	Session  *discordgo.Session
 }
 
 // NewReceiver Creates a new Discord NATS receiver
@@ -61,9 +62,11 @@ func New(conf *Config) (*Receiver, error) {
 	r.log = conf.Logger
 
 	// TODO: Add redis cache interface
-	r.session, err = discordgo.New("Bot " + conf.Token)
-	if err != nil {
-		return nil, err
+	if conf.Session != nil {
+		r.session, err = discordgo.New("Bot " + conf.Token)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// r.session = disgord.New(disgord.Config{
