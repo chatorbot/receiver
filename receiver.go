@@ -5,7 +5,7 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/auttaja/discordgo"
+	"github.com/bwmarrin/discordgo"
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 )
