@@ -30,7 +30,7 @@ type Config struct {
 
 // NewReceiver Creates a new Discord NATS receiver
 func New(conf *Config) (*Receiver, error) {
-	if conf.Token == "" {
+	if conf.Token == "" && conf.Session == nil {
 		return nil, errors.New("no valid token provided")
 	}
 
