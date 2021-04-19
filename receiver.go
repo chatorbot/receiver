@@ -62,7 +62,7 @@ func New(conf *Config) (*Receiver, error) {
 	r.log = conf.Logger
 
 	// TODO: Add redis cache interface
-	if conf.Session != nil {
+	if conf.Session == nil {
 		r.session, err = discordgo.New("Bot " + conf.Token)
 		if err != nil {
 			return nil, err
