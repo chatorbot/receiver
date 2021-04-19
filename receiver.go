@@ -67,6 +67,8 @@ func New(conf *Config) (*Receiver, error) {
 		if err != nil {
 			return nil, err
 		}
+	} else {
+		r.session = conf.Session
 	}
 
 	// r.session = disgord.New(disgord.Config{
