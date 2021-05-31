@@ -13,8 +13,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Kelwing/nats-bot-test/receiver"
-	"github.com/andersfylling/disgord"
+	"github.com/chatorbot/receiver"
+	"github.com/Postcord/objects"
 	"github.com/sirupsen/logrus"
 )
 
@@ -51,12 +51,12 @@ func main() {
 	<-sc
 }
 
-func ready(s disgord.Session, m *disgord.Ready) error {
+func ready(s disgord.Session, m *objects.Ready) error {
 	fmt.Printf("Bot ready: %s\n", m.User.Username)
 	return nil
 }
 
-func message(s disgord.Session, m *disgord.MessageCreate) error {
+func message(s disgord.Session, m *objects.MessageCreate) error {
 	fmt.Printf("%s: %s\n", m.Message.Author.Username, m.Message.Content)
 	return nil
 }
