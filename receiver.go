@@ -5,7 +5,7 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/Postcord/rest"
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 )
@@ -15,7 +15,7 @@ type EventHandler interface{}
 // Receiver is a client to interface with the Chator NATS Discord interface
 type Receiver struct {
 	conn     *nats.Conn
-	session  *discordgo.Session
+	session  *rest.Client
 	handlers map[string][]EventHandler
 	log      *logrus.Logger
 }
@@ -25,12 +25,12 @@ type Config struct {
 	NatsAddr string
 	Token    string
 	Logger   *logrus.Logger
-	Session  *discordgo.Session
+	Client   *rest.Client
 }
 
 // NewReceiver Creates a new Discord NATS receiver
 func New(conf *Config) (*Receiver, error) {
-	if conf.Token == "" && conf.Session == nil {
+	if conf.Token == "" && conf.Client == nil {
 		return nil, errors.New("no valid token provided")
 	}
 
@@ -62,13 +62,17 @@ func New(conf *Config) (*Receiver, error) {
 	r.log = conf.Logger
 
 	// TODO: Add redis cache interface
-	if conf.Session == nil {
-		r.session, err = discordgo.New("Bot " + conf.Token)
+	if conf.Client == nil {
+		r.session = rest.New(&rest.Config{
+			Ratelimiter: rest.NewMemoryRatelimiter(&rest.MemoryConf{
+				Authorization: "Bot " + conf.Token,
+			}),
+		})
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		r.session = conf.Session
+		r.session = conf.Client
 	}
 
 	// r.session = disgord.New(disgord.Config{
