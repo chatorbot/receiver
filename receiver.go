@@ -130,7 +130,7 @@ func (r *Receiver) listener(m *nats.Msg) {
 
 		err := json.Unmarshal(m.Data, obj)
 		if err != nil {
-			r.log.Warn("Failed to unmarshal ", m.Subject, " into ", obj)
+			r.log.Warn("Failed to unmarshal ", m.Subject, " into ", obj, ": ", err.Error())
 			return
 		}
 
