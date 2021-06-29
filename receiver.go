@@ -14,18 +14,20 @@ type EventHandler interface{}
 
 // Receiver is a client to interface with the Chator NATS Discord interface
 type Receiver struct {
-	conn     *nats.Conn
-	session  *rest.Client
-	handlers map[string][]EventHandler
-	log      *logrus.Logger
+	conn        *nats.Conn
+	session     *rest.Client
+	handlers    map[string][]EventHandler
+	log         *logrus.Logger
+	serviceName string
 }
 
 // Config contains the configuration options for the Receiver
 type Config struct {
-	NatsAddr string
-	Token    string
-	Logger   *logrus.Logger
-	Client   *rest.Client
+	NatsAddr    string
+	Token       string
+	Logger      *logrus.Logger
+	Client      *rest.Client
+	ServiceName string
 }
 
 // NewReceiver Creates a new Discord NATS receiver
@@ -86,7 +88,11 @@ func New(conf *Config) (*Receiver, error) {
 func (r *Receiver) Start() {
 	for k := range r.handlers {
 		r.log.Infof("Subscribing to %s", k)
-		r.conn.Subscribe(k, r.listener)
+		if r.serviceName != "" {
+			r.conn.QueueSubscribe(k, r.serviceName, r.listener)
+		} else {
+			r.conn.Subscribe(k, r.listener)
+		}
 	}
 }
 
