@@ -66,9 +66,11 @@ func New(conf *Config) (*Receiver, error) {
 	// TODO: Add redis cache interface
 	if conf.Client == nil {
 		r.session = rest.New(&rest.Config{
+			Authorization: "Bot " + conf.Token,
 			Ratelimiter: rest.NewMemoryRatelimiter(&rest.MemoryConf{
-				Authorization: "Bot " + conf.Token,
+				MaxRetries: 3,
 			}),
+			UserAgent: "Postcord/1.0",
 		})
 		if err != nil {
 			return nil, err
